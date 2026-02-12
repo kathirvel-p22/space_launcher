@@ -1,203 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Orbit Breaker - A space defense game where you protect Earth from meteor showers"
-    />
-    <title>KATHIR GAME</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
-  </head>
-  <body>
-    <div class="game-container">
-     
-
-      <div class="main-menu" id="mainMenu">
-        <div class="menu-content">
-          <h1>ORBIT BREAKER</h1>
-          <button id="startButton">Start</button>
-          <div id="startStatus" style="margin-top: 12px; font-size: 0.95rem; color: rgba(255,255,255,0.95); background: rgba(255,255,255,0.08); padding: 8px 10px; border-radius: 6px; min-height: 1.2em;">Loading...</div>
-          <div id="startError" style="margin-top: 12px; font-size: 0.95rem; color: #ff6b6b; background: rgba(255, 20, 20, 0.08); padding: 8px 10px; border-radius: 6px; display: none;"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbit Breaker - Space Adventure Game</title>
+    <link rel="stylesheet" href="styles_enhanced.css">
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div id="gameContainer">
+        <!-- Game Canvas -->
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- HUD (Heads-Up Display) -->
+        <div id="hud" style="display: none;">
+            <!-- Top Left: Health & Fuel -->
+            <div class="hud-top-left">
+                <div id="healthBar" class="hud-panel">
+                    <div class="hud-label">Health</div>
+                    <div class="health-bar-container">
+                        <div class="health-bar-fill" style="width: 100%;"></div>
+                        <div class="health-bar-text">100 / 100</div>
+                    </div>
+                </div>
+                <div id="fuelBar" class="hud-panel" style="display: none;">
+                    <div class="hud-label">Fuel</div>
+                    <div class="fuel-bar-container">
+                        <div class="fuel-bar-fill" style="width: 100%;"></div>
+                        <div class="fuel-bar-text">100%</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Top Center: Score -->
+            <div class="hud-top-center">
+                <div class="hud-panel">
+                    <div class="hud-label">Score</div>
+                    <div id="scoreValue" class="hud-value">0</div>
+                </div>
+            </div>
+            
+            <!-- Top Right: Level & Time -->
+            <div class="hud-top-right">
+                <div class="hud-panel">
+                    <div class="hud-label">Level</div>
+                    <div id="levelValue" class="hud-value">1</div>
+                </div>
+                <div class="hud-panel">
+                    <div class="hud-label">Time</div>
+                    <div id="timeValue" class="hud-value">0:00</div>
+                </div>
+            </div>
+            
+            <!-- Bottom: Controls Hint -->
+            <div class="hud-bottom">
+                <div class="controls-hint">
+                    <kbd>←</kbd><kbd>→</kbd> or <kbd>A</kbd><kbd>D</kbd> Move | 
+                    <kbd>↑</kbd> or <kbd>W</kbd> Jump/Thrust | 
+                    <kbd>X</kbd> or <kbd>Enter</kbd> Shoot | 
+                    <kbd>ESC</kbd> Pause
+                </div>
+            </div>
         </div>
-      </div>
-
-
-      <canvas id="gameCanvas"></canvas>
-
-      <div class="hud" id="hud">
-        <div class="hud-element health-bar">
-          <div class="health-bar-fill" id="healthBar"></div>
+        
+        <!-- Main Menu -->
+        <div id="mainMenu" class="menu-overlay">
+            <div class="menu-content">
+                <h1 class="menu-title">Orbit Breaker</h1>
+                <p class="menu-subtitle">Journey from Earth to Mars</p>
+                <div class="menu-buttons">
+                    <button id="startButton" class="menu-button">Start Game</button>
+                    <button id="continueButton" class="menu-button" style="display: none;">Continue</button>
+                    <button id="levelSelectButton" class="menu-button-secondary menu-button">Level Select</button>
+                    <button id="optionsButton" class="menu-button-secondary menu-button" style="display: none;">Options</button>
+                </div>
+                <div id="startStatus" class="status-message status-info" style="display: none;"></div>
+                <div id="startError" class="status-message status-error" style="display: none;"></div>
+            </div>
         </div>
-        <div class="hud-element score-display" id="scoreDisplay">
-          <span>SCORE: </span><span id="scoreValue">0</span>
+        
+        <!-- Level Select Menu -->
+        <div id="levelSelectMenu" class="menu-overlay" style="display: none;">
+            <div class="menu-content">
+                <h2 class="menu-title" style="font-size: 36px;">Select Level</h2>
+                <div class="menu-buttons" id="levelSelectButtons" style="max-height: 400px; overflow-y: auto;">
+                    <!-- Dynamically generated level buttons -->
+                </div>
+                <div class="menu-buttons" style="margin-top: 20px;">
+                    <button id="backToMainButton" class="menu-button-secondary menu-button">Back to Main Menu</button>
+                </div>
+            </div>
         </div>
-        <div class="hud-element level-display" id="levelDisplay">
-          <span>LEVEL: </span><span id="levelValue">1</span>
+        
+        <!-- Pause Menu -->
+        <div id="pauseMenu" class="menu-overlay" style="display: none;">
+            <div class="menu-content">
+                <h2 class="menu-title">Paused</h2>
+                <div class="menu-buttons">
+                    <button id="resumeButton" class="menu-button">Resume</button>
+                    <button id="restartButton" class="menu-button-secondary menu-button">Restart Level</button>
+                    <button id="mainMenuButton" class="menu-button-danger menu-button">Main Menu</button>
+                </div>
+            </div>
         </div>
-        <div class="hud-element time-display" id="timeDisplay">
-          <span>TIME: </span><span id="timeValue">00:00</span>
+        
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="menu-overlay" style="display: none;">
+            <div class="menu-content">
+                <h2 class="menu-title">Game Over</h2>
+                <div class="game-over-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Final Score:</span>
+                        <span class="stat-value" id="finalScore">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Level Reached:</span>
+                        <span class="stat-value" id="finalLevel">1</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Time Played:</span>
+                        <span class="stat-value" id="finalTime">0:00</span>
+                    </div>
+                </div>
+                <div class="menu-buttons">
+                    <button id="retryButton" class="menu-button">Retry Level</button>
+                    <button id="quitButton" class="menu-button-danger menu-button">Main Menu</button>
+                </div>
+            </div>
         </div>
-      </div>
-
-      <div class="emergency-alarm" id="emergencyAlarm">
-        <div class="alarm-text">EMERGENCY</div>
-      </div>
-
-      <div class="damage-indicator" id="damageIndicator"></div>
-
-      <div class="pause-menu" id="pauseMenu" style="display: none">
-        <div class="pause-content">
-          <h2>PAUSED</h2>
-          <button id="resumeButton">Resume</button>
-          <button id="restartButton">Restart</button>
-          <button id="mainMenuButton">Main Menu</button>
+        
+        <!-- Victory Screen -->
+        <div id="victoryScreen" class="menu-overlay" style="display: none;">
+            <div class="menu-content">
+                <h2 class="menu-title" style="color: var(--success-color);">Victory!</h2>
+                <p class="menu-subtitle">Level Complete</p>
+                <div class="game-over-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Score:</span>
+                        <span class="stat-value" id="victoryScore">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Time:</span>
+                        <span class="stat-value" id="victoryTime">0:00</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Accuracy:</span>
+                        <span class="stat-value" id="victoryAccuracy">100%</span>
+                    </div>
+                </div>
+                <div class="menu-buttons">
+                    <button id="nextLevelButton" class="menu-button">Next Level</button>
+                    <button id="victoryMenuButton" class="menu-button-secondary menu-button">Main Menu</button>
+                </div>
+            </div>
         </div>
-      </div>
-
-      <div class="game-over-screen" id="gameOverScreen" style="display: none">
-        <div class="game-over-content">
-          <h1>GAME OVER</h1>
-          <p id="gameOverScore">Final Score: <span>0</span></p>
-          <button id="retryButton">Retry</button>
-          <button id="quitButton">Quit to Menu</button>
+        
+        <!-- Chapter Transition -->
+        <div id="chapterTransition" class="chapter-transition" style="display: none;">
+            <div class="chapter-number">CHAPTER <span id="chapterNum">1</span></div>
+            <div class="chapter-title" id="chapterTitle">EARTH</div>
+            <div class="chapter-subtitle" id="chapterSubtitle">The Beginning</div>
         </div>
-      </div>
-
+        
+        <!-- Emergency Alarm (hidden by default) -->
+        <div id="emergencyAlarm" style="display: none;"></div>
+        <div id="damageIndicator" style="display: none;"></div>
     </div>
-
-    <audio id="backgroundMusic" loop>
-      <source src="assets/audio/background_music.mp3" type="audio/mpeg" />
-      Your browser does not support the audio element.
-    </audio>
-
-    <audio id="meteorImpact" preload="auto">
-      <source src="assets/audio/meteor_impact.mp3" type="audio/mpeg" />
-    </audio>
-
-    <audio id="rocketLaunch" preload="auto">
-      <source src="assets/audio/rocket_launch.mp3" type="audio/mpeg" />
-    </audio>
-
-    <audio id="explosion" preload="auto">
-      <source src="assets/audio/explosion.mp3" type="audio/mpeg" />
-    </audio>
-
-    <audio id="alarmSound" loop>
-      <source src="assets/audio/alarm.mp3" type="audio/mpeg" />
-    </audio>
-
-    <script type="module" src="src/main.js?v=2025-12-18-003"></script>
-    <script>
-      (function () {
-        const startButton = document.getElementById('startButton');
-        const startStatus = document.getElementById('startStatus');
-        const startError = document.getElementById('startError');
-
-        if (startButton) {
-          startButton.addEventListener(
-            'click',
-            function (e) {
-              try {
-                // Visible proof the click handler is running
-                startButton.textContent = 'Clicked...';
-              } catch (_) {}
-
-              if (typeof window.__orbitBreakerStart === 'function') {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                window.__orbitBreakerStart();
-                return;
-              }
-
-              if (startError) {
-                startError.style.display = 'none';
-                startError.textContent = '';
-              }
-
-              if (startStatus) {
-                startStatus.textContent = 'Loading... (please wait and click again)';
-              }
-            },
-            true
-          );
-        }
-
-        setTimeout(function () {
-          try {
-            if (startStatus && startStatus.textContent === 'Loading...') {
-              startStatus.textContent = 'Loading... (if stuck, press Ctrl+F5)';
-            }
-          } catch (_) {
-            // ignore
-          }
-        }, 2500);
-      })();
-    </script>
-    <script>
-      // Communicate with parent iframe if embedded
-      if (window !== window.top) {
-          const parentOrigin = new URL(window.location).origin;
-          
-          // Listen for auto-start message from parent
-          window.addEventListener('message', function(event) {
-              if (event.data && event.data.type === 'autoStartGame') {
-                  console.log('Received auto-start message');
-                  
-                  // Start the game automatically
-                  setTimeout(function() {
-                      try {
-                          // Access the global gameState from main.js
-                          if (typeof game !== 'undefined' && game !== null) {
-                              // If game object is available
-                              if (typeof game.loadLevel === 'function') {
-                                  game.loadLevel('earth', 1);
-                              }
-                          } else if (typeof gameState !== 'undefined' && gameState && gameState.game && typeof gameState.game.loadLevel === 'function') {
-                              // Fallback to gameState
-                              gameState.menu.hideMainMenu();
-                              gameState.game.loadLevel('earth', 1);
-                              gameState.currentScene = 'game';
-                          }
-                      } catch (e) {
-                          console.log('Auto-start failed:', e);
-                      }
-                  }, 1000);
-              }
-          });
-          
-          // Send game status updates to parent
-          function sendGameStatus() {
-          try {
-            const gameState = {
-              type: 'gameStatus',
-              state: 'Playing',
-              score: 0,
-              level: 1,
-              health: 100
-            };
-            
-            // Try to get actual game state from the game
-            if (typeof game !== 'undefined' && game.gameState) {
-              gameState.score = game.gameState.score || 0;
-              gameState.level = game.gameState.level || 1;
-              gameState.health = game.gameState.health || 100;
-            }
-            
-            window.parent.postMessage(gameState, parentOrigin);
-          } catch (e) {
-            console.log('Could not send message to parent');
-          }
-        }
-        
-        // Send initial status
-        sendGameStatus();
-        
-        // Set up interval to send updates
-        setInterval(sendGameStatus, 1000);
-      }
-    </script>
-  </body>
+    
+    <!-- Game Script -->
+    <script type="module" src="src/main_enhanced.js"></script>
+</body>
 </html>
