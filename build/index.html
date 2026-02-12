@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Orbit Breaker - A space defense game where you protect Earth from meteor showers"
+    />
+    <title>KATHIR GAME</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
+  </head>
+  <body>
+    <div class="game-container">
+     
+
+      <div class="main-menu" id="mainMenu">
+        <div class="menu-content">
+          <h1>ORBIT BREAKER</h1>
+          <button id="startButton">Start</button>
+          <div id="startStatus" style="margin-top: 12px; font-size: 0.95rem; color: rgba(255,255,255,0.95); background: rgba(255,255,255,0.08); padding: 8px 10px; border-radius: 6px; min-height: 1.2em;">Loading...</div>
+          <div id="startError" style="margin-top: 12px; font-size: 0.95rem; color: #ff6b6b; background: rgba(255, 20, 20, 0.08); padding: 8px 10px; border-radius: 6px; display: none;"></div>
+        </div>
+      </div>
+
+
+      <canvas id="gameCanvas"></canvas>
+
+      <div class="hud" id="hud">
+        <div class="hud-element health-bar">
+          <div class="health-bar-fill" id="healthBar"></div>
+        </div>
+        <div class="hud-element score-display" id="scoreDisplay">
+          <span>SCORE: </span><span id="scoreValue">0</span>
+        </div>
+        <div class="hud-element level-display" id="levelDisplay">
+          <span>LEVEL: </span><span id="levelValue">1</span>
+        </div>
+        <div class="hud-element time-display" id="timeDisplay">
+          <span>TIME: </span><span id="timeValue">00:00</span>
+        </div>
+      </div>
+
+      <div class="emergency-alarm" id="emergencyAlarm">
+        <div class="alarm-text">EMERGENCY</div>
+      </div>
+
+      <div class="damage-indicator" id="damageIndicator"></div>
+
+      <div class="pause-menu" id="pauseMenu" style="display: none">
+        <div class="pause-content">
+          <h2>PAUSED</h2>
+          <button id="resumeButton">Resume</button>
+          <button id="restartButton">Restart</button>
+          <button id="mainMenuButton">Main Menu</button>
+        </div>
+      </div>
+
+      <div class="game-over-screen" id="gameOverScreen" style="display: none">
+        <div class="game-over-content">
+          <h1>GAME OVER</h1>
+          <p id="gameOverScore">Final Score: <span>0</span></p>
+          <button id="retryButton">Retry</button>
+          <button id="quitButton">Quit to Menu</button>
+        </div>
+      </div>
+
+    </div>
+
+    <audio id="backgroundMusic" loop>
+      <source src="assets/audio/background_music.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+
+    <audio id="meteorImpact" preload="auto">
+      <source src="assets/audio/meteor_impact.mp3" type="audio/mpeg" />
+    </audio>
+
+    <audio id="rocketLaunch" preload="auto">
+      <source src="assets/audio/rocket_launch.mp3" type="audio/mpeg" />
+    </audio>
+
+    <audio id="explosion" preload="auto">
+      <source src="assets/audio/explosion.mp3" type="audio/mpeg" />
+    </audio>
+
+    <audio id="alarmSound" loop>
+      <source src="assets/audio/alarm.mp3" type="audio/mpeg" />
+    </audio>
+
+    <script type="module" src="src/main.js?v=2025-12-18-003"></script>
+    <script>
+      (function () {
+        const startButton = document.getElementById('startButton');
+        const startStatus = document.getElementById('startStatus');
+        const startError = document.getElementById('startError');
+
+        if (startButton) {
+          startButton.addEventListener(
+            'click',
+            function (e) {
+              try {
+                // Visible proof the click handler is running
+                startButton.textContent = 'Clicked...';
+              } catch (_) {}
+
+              if (typeof window.__orbitBreakerStart === 'function') {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                window.__orbitBreakerStart();
+                return;
+              }
+
+              if (startError) {
+                startError.style.display = 'none';
+                startError.textContent = '';
+              }
+
+              if (startStatus) {
+                startStatus.textContent = 'Loading... (please wait and click again)';
+              }
+            },
+            true
+          );
+        }
+
+        setTimeout(function () {
+          try {
+            if (startStatus && startStatus.textContent === 'Loading...') {
+              startStatus.textContent = 'Loading... (if stuck, press Ctrl+F5)';
+            }
+          } catch (_) {
+            // ignore
+          }
+        }, 2500);
+      })();
+    </script>
+    <script>
+      // Communicate with parent iframe if embedded
+      if (window !== window.top) {
+          const parentOrigin = new URL(window.location).origin;
+          
+          // Listen for auto-start message from parent
+          window.addEventListener('message', function(event) {
+              if (event.data && event.data.type === 'autoStartGame') {
+                  console.log('Received auto-start message');
+                  
+                  // Start the game automatically
+                  setTimeout(function() {
+                      try {
+                          // Access the global gameState from main.js
+                          if (typeof game !== 'undefined' && game !== null) {
+                              // If game object is available
+                              if (typeof game.loadLevel === 'function') {
+                                  game.loadLevel('earth', 1);
+                              }
+                          } else if (typeof gameState !== 'undefined' && gameState && gameState.game && typeof gameState.game.loadLevel === 'function') {
+                              // Fallback to gameState
+                              gameState.menu.hideMainMenu();
+                              gameState.game.loadLevel('earth', 1);
+                              gameState.currentScene = 'game';
+                          }
+                      } catch (e) {
+                          console.log('Auto-start failed:', e);
+                      }
+                  }, 1000);
+              }
+          });
+          
+          // Send game status updates to parent
+          function sendGameStatus() {
+          try {
+            const gameState = {
+              type: 'gameStatus',
+              state: 'Playing',
+              score: 0,
+              level: 1,
+              health: 100
+            };
+            
+            // Try to get actual game state from the game
+            if (typeof game !== 'undefined' && game.gameState) {
+              gameState.score = game.gameState.score || 0;
+              gameState.level = game.gameState.level || 1;
+              gameState.health = game.gameState.health || 100;
+            }
+            
+            window.parent.postMessage(gameState, parentOrigin);
+          } catch (e) {
+            console.log('Could not send message to parent');
+          }
+        }
+        
+        // Send initial status
+        sendGameStatus();
+        
+        // Set up interval to send updates
+        setInterval(sendGameStatus, 1000);
+      }
+    </script>
+  </body>
+</html>

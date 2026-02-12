@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auto-Start Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f0f0f0;
+      }
+      .test-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      }
+      h1 {
+        color: #333;
+      }
+      .test-section {
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f9f9f9;
+        border-radius: 5px;
+      }
+      button {
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-right: 10px;
+      }
+      button:hover {
+        background: #45a049;
+      }
+      #testResults {
+        background: #e8f5e9;
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+      }
+      .success {
+        color: #2e7d32;
+      }
+      .error {
+        color: #d32f2f;
+      }
+      .info {
+        color: #1976d2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-container">
+      <h1>Auto-Start Test</h1>
+      
+      <div class="test-section">
+        <h2>Test Instructions</h2>
+        <p>This page tests the auto-start functionality of the game. The game should:</p>
+        <ol>
+          <li>Load Earth Level 1 automatically</li>
+          <li>Start the game loop without user interaction</li>
+          <li>Display the game canvas with level elements</li>
+        </ol>
+      </div>
+      
+      <div class="test-section">
+        <h2>Test Controls</h2>
+        <button id="runTest">Run Auto-Start Test</button>
+        <button id="checkGameState">Check Game State</button>
+        <button id="resetTest">Reset Test</button>
+      </div>
+      
+      <div class="test-section">
+        <h2>Test Results</h2>
+        <div id="testResults">
+          <p class="info">Test results will appear here...</p>
+        </div>
+      </div>
+      
+      <div class="test-section">
+        <h2>Debug Information</h2>
+        <div id="debugInfo">
+          <p class="info">Debug information will appear here...</p>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      // Test variables
+      let testResults = [];
+      let gameInstance = null;
+      
+      // DOM elements
+      const runTestBtn = document.getElementById('runTest');
+      const checkGameStateBtn = document.getElementById('checkGameState');
+      const resetTestBtn = document.getElementById('resetTest');
+      const testResultsDiv = document.getElementById('testResults');
+      const debugInfoDiv = document.getElementById('debugInfo');
+      
+      // Test functions
+      function addResult(message, isSuccess = true) {
+        const result = {
+          message,
+          timestamp: new Date().toISOString(),
+          isSuccess
+        };
+        testResults.push(result);
+        displayResults();
+      }
+      
+      function displayResults() {
+        testResultsDiv.innerHTML = '';
+        if (testResults.length === 0) {
+          testResultsDiv.innerHTML = '<p class="info">Test results will appear here...</p>';
+          return;
+        }
+        
+        testResults.forEach((result, index) => {
+          const p = document.createElement('p');
+          p.className = result.isSuccess ? 'success' : 'error';
+          p.innerHTML = `<strong>Test ${index + 1}:</strong> ${result.message}`;
+          testResultsDiv.appendChild(p);
+        });
+      }
+      
+      function displayDebugInfo(info) {
+        debugInfoDiv.innerHTML = '';
+        if (typeof info === 'string') {
+          debugInfoDiv.innerHTML = `<pre>${info}</pre>`;
+        } else if (typeof info === 'object') {
+          debugInfoDiv.innerHTML = `<pre>${JSON.stringify(info, null, 2)}</pre>`;
+        }
+      }
+      
+      // Run auto-start test
+      runTestBtn.addEventListener('click', async () => {
+        testResults = [];
+        addResult('Starting auto-start test...', true);
+        
+        try {
+          // Import the game module
+          addResult('Importing game module...', true);
+          const module = await import('./src/main.js');
+          
+          // Wait for game to initialize
+          addResult('Waiting for game initialization...', true);
+          
+          // Check if gameState is available
+          setTimeout(() => {
+            if (typeof gameState !== 'undefined' && gameState.game) {
+              addResult('Game state is available', true);
+              
+              if (gameState.currentScene === 'game') {
+                addResult('Game is in game scene (not menu)', true);
+              } else {
+                addResult('Game is NOT in game scene', false);
+              }
+              
+              if (gameState.game.isRunning) {
+                addResult('Game loop is running', true);
+              } else {
+                addResult('Game loop is NOT running', false);
+              }
+              
+              displayDebugInfo({
+                currentScene: gameState.currentScene,
+                isRunning: gameState.game.isRunning,
+                currentLevel: gameState.game.gameState.currentLevel
+              });
+            } else {
+              addResult('Game state is NOT available', false);
+              displayDebugInfo('Game state not found');
+            }
+          }, 3000);
+          
+        } catch (error) {
+          addResult(`Test failed: ${error.message}`, false);
+          displayDebugInfo(error.stack);
+        }
+      });
+      
+      // Check game state
+      checkGameStateBtn.addEventListener('click', () => {
+        if (typeof gameState !== 'undefined' && gameState.game) {
+          addResult('Game state check successful', true);
+          displayDebugInfo({
+            currentScene: gameState.currentScene,
+            isRunning: gameState.game.isRunning,
+            currentLevel: gameState.game.gameState.currentLevel,
+            sceneManager: gameState.game.sceneManager.currentScene ? 'Scene loaded' : 'No scene'
+          });
+        } else {
+          addResult('Game state not found', false);
+          displayDebugInfo('Game state is undefined');
+        }
+      });
+      
+      // Reset test
+      resetTestBtn.addEventListener('click', () => {
+        testResults = [];
+        displayResults();
+        debugInfoDiv.innerHTML = '<p class="info">Debug information will appear here...</p>';
+        addResult('Test reset complete', true);
+      });
+    </script>
+  </body>
+</html>

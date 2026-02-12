@@ -1,0 +1,66 @@
+{
+    "id": 1,
+    "name": "Earth Orbit Initiation",
+    "scene": "earth",
+    "gravityWells": [
+        {
+            "type": "planet",
+            "position": { "x": 0, "y": 0 },
+            "mass": 5.972e24,
+            "radius": 6371000,
+            "color": "#1da1f2",
+            "texture": "earth_texture.png"
+        }
+    ],
+    "entities": [
+        {
+            "type": "player",
+            "position": { "x": 1000000, "y": 500000 },
+            "properties": {
+                "health": 100,
+                "maxSpeed": 500,
+                "thrustForce": 1000,
+                "fuel": 100,
+                "sprite": "player_ship.png",
+                "mass": 1000,
+                "dragCoefficient": 0.2
+            }
+        },
+        {
+            "type": "meteor",
+            "position": { "x": 1500000, "y": 300000 },
+            "properties": {
+                "size": "medium",
+                "health": 50,
+                "mass": 5000,
+                "velocity": { "x": -100, "y": 50 },
+                "sprite": "meteor_medium.png",
+                "isStatic": false
+            }
+        },
+        {
+            "type": "meteor",
+            "position": { "x": 2000000, "y": 800000 },
+            "properties": {
+                "size": "small",
+                "health": 30,
+                "mass": 2000,
+                "velocity": { "x": -150, "y": -80 },
+                "sprite": "meteor_small.png",
+                "isStatic": false
+            }
+        }
+    ],
+    "objectives": [
+        {
+            "type": "reach",
+            "target": "orbit_point_1",
+            "description": "Reach the first orbit checkpoint"
+        }
+    ],
+    "background": "earth_background.png",
+    "music": "earth_orbit.mp3",
+    "ambientSounds": ["wind.mp3", "birds.mp3"],
+    "difficulty": 1,
+    "requiredUnlocks": []
+}

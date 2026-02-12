@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orbit Breaker - Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        #gameCanvas {
+            display: block;
+        }
+        .status {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <div class="status" id="status">Initializing...</div>
+    
+    <script type="module">
+        // Test script to verify game initialization
+        const statusElement = document.getElementById('status');
+        
+        async function testGame() {
+            try {
+                statusElement.textContent = 'Loading game...';
+                statusElement.className = 'status';
+                
+                // Import the game
+                const { initGame } = await import('./src/main.js');
+                
+                statusElement.textContent = 'Initializing game...';
+                
+                // Initialize game
+                const game = await initGame();
+                
+                statusElement.textContent = '✓ Game initialized successfully!';
+                statusElement.className = 'status success';
+                
+                console.log('Game initialized:', game);
+            } catch (error) {
+                statusElement.textContent = '✗ Error: ' + error.message;
+                statusElement.className = 'status error';
+                console.error('Game initialization failed:', error);
+            }
+        }
+        
+        // Start test
+        document.addEventListener('DOMContentLoaded', testGame);
+    </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+{
+    "version": "1.0.0",
+    "assets": {
+        "images": {
+            "earth": {
+                "path": "assets/images/earth.png",
+                "width": 512,
+                "height": 512,
+                "type": "planet"
+            },
+            "moon": {
+                "path": "assets/images/moon.png",
+                "width": 256,
+                "height": 256,
+                "type": "planet"
+            },
+            "stars": {
+                "path": "assets/images/stars.png",
+                "width": 1920,
+                "height": 1080,
+                "type": "background"
+            },
+            "galaxy": {
+                "path": "assets/images/galaxy.png",
+                "width": 1920,
+                "height": 1080,
+                "type": "background"
+            }
+        },
+        "sprites": {
+            "player": {
+                "path": "assets/sprites/player_sprite.png",
+                "width": 64,
+                "height": 64,
+                "frameWidth": 32,
+                "frameHeight": 32,
+                "frames": 4,
+                "type": "entity"
+            },
+            "meteor_small": {
+                "path": "assets/sprites/meteor_small.png",
+                "width": 64,
+                "height": 64,
+                "frameWidth": 32,
+                "frameHeight": 32,
+                "frames": 8,
+                "type": "entity"
+            },
+            "meteor_medium": {
+                "path": "assets/sprites/meteor_medium.png",
+                "width": 128,
+                "height": 128,
+                "frameWidth": 64,
+                "frameHeight": 64,
+                "frames": 6,
+                "type": "entity"
+            },
+            "meteor_large": {
+                "path": "assets/sprites/meteor_large.png",
+                "width": 256,
+                "height": 256,
+                "frameWidth": 128,
+                "frameHeight": 128,
+                "frames": 4,
+                "type": "entity"
+            },
+            "rocket": {
+                "path": "assets/sprites/rocket.png",
+                "width": 128,
+                "height": 128,
+                "frameWidth": 64,
+                "frameHeight": 64,
+                "frames": 4,
+                "type": "entity"
+            },
+            "explosion": {
+                "path": "assets/sprites/explosion.png",
+                "width": 256,
+                "height": 256,
+                "frameWidth": 64,
+                "frameHeight": 64,
+                "frames": 8,
+                "type": "effect"
+            }
+        },
+        "audio": {
+            "background_music": {
+                "path": "assets/audio/background_music.mp3",
+                "loop": true,
+                "volume": 0.5,
+                "type": "music"
+            },
+            "meteor_impact": {
+                "path": "assets/audio/meteor_impact.mp3",
+                "loop": false,
+                "volume": 0.7,
+                "type": "sfx"
+            },
+            "rocket_launch": {
+                "path": "assets/audio/rocket_launch.mp3",
+                "loop": false,
+                "volume": 0.8,
+                "type": "sfx"
+            },
+            "explosion": {
+                "path": "assets/audio/explosion.mp3",
+                "loop": false,
+                "volume": 0.9,
+                "type": "sfx"
+            },
+            "alarm": {
+                "path": "assets/audio/alarm.mp3",
+                "loop": true,
+                "volume": 0.6,
+                "type": "sfx"
+            },
+            "level_complete": {
+                "path": "assets/audio/level_complete.mp3",
+                "loop": false,
+                "volume": 0.8,
+                "type": "sfx"
+            },
+            "game_over": {
+                "path": "assets/audio/game_over.mp3",
+                "loop": false,
+                "volume": 0.8,
+                "type": "sfx"
+            }
+        },
+        "fonts": {
+            "main": {
+                "path": "assets/fonts/pixel_font.ttf",
+                "type": "font"
+            }
+        }
+    },
+    "metadata": {
+        "totalAssets": 18,
+        "lastUpdated": "2025-12-18T08:29:40Z",
+        "gameVersion": "1.0.0"
+    }
+}

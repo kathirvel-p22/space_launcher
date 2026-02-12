@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORBIT BREAKER - Play Now!</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        #gameCanvas {
+            display: block;
+            background: #000;
+        }
+        .hud {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-size: 16px;
+            z-index: 100;
+        }
+        .hud-element {
+            margin-bottom: 5px;
+        }
+        .health-bar {
+            width: 200px;
+            height: 20px;
+            background: #333;
+            border: 1px solid #666;
+        }
+        .health-bar-fill {
+            height: 100%;
+            background: #4CAF50;
+            width: 100%;
+        }
+        .emergency-alarm {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: red;
+            font-size: 48px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px #000;
+            display: none;
+            z-index: 200;
+        }
+        .damage-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: red;
+            font-size: 72px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px #000;
+            display: none;
+            z-index: 200;
+        }
+        .pause-menu {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            z-index: 300;
+        }
+        .pause-content h2 {
+            color: white;
+            margin-bottom: 20px;
+        }
+        .pause-content button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .pause-content button:hover {
+            background: #45a049;
+        }
+        .game-over-screen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+            z-index: 400;
+        }
+        .game-over-content h1 {
+            color: red;
+            margin-bottom: 20px;
+        }
+        .game-over-content p {
+            color: white;
+            margin-bottom: 20px;
+        }
+        .game-over-content button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .game-over-content button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <div class="hud" id="hud">
+        <div class="hud-element health-bar">
+            <div class="health-bar-fill" id="healthBar"></div>
+        </div>
+        <div class="hud-element score-display" id="scoreDisplay">
+            <span>SCORE: </span><span id="scoreValue">0</span>
+        </div>
+        <div class="hud-element level-display" id="levelDisplay">
+            <span>LEVEL: </span><span id="levelValue">1</span>
+        </div>
+        <div class="hud-element time-display" id="timeDisplay">
+            <span>TIME: </span><span id="timeValue">00:00</span>
+        </div>
+    </div>
+
+    <div class="emergency-alarm" id="emergencyAlarm">
+        <div class="alarm-text">EMERGENCY</div>
+    </div>
+
+    <div class="damage-indicator" id="damageIndicator"></div>
+
+    <div class="pause-menu" id="pauseMenu">
+        <div class="pause-content">
+            <h2>PAUSED</h2>
+            <button id="resumeButton">Resume</button>
+            <button id="restartButton">Restart</button>
+            <button id="mainMenuButton">Main Menu</button>
+        </div>
+    </div>
+
+    <div class="game-over-screen" id="gameOverScreen">
+        <div class="game-over-content">
+            <h1>GAME OVER</h1>
+            <p id="gameOverScore">Final Score: <span>0</span></p>
+            <button id="retryButton">Retry</button>
+            <button id="quitButton">Quit to Menu</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import all necessary modules
+        import { Game } from './src/core/Game.js';
+        import { Menu } from './src/ui/Menu.js';
+        import { HUD } from './src/ui/HUD.js';
+
+        // Game state
+        const gameState = {
+            game: null,
+            menu: null,
+            hud: null,
+            isPaused: false,
+            currentScene: 'game',
+            score: 0,
+            health: 100,
+            level: 1,
+            time: 0
+        };
+
+        // Initialize UI elements
+        function initUI() {
+            gameState.hud = new HUD({
+                healthBar: document.getElementById('healthBar'),
+                scoreValue: document.getElementById('scoreValue'),
+                levelValue: document.getElementById('levelValue'),
+                timeValue: document.getElementById('timeValue')
+            });
+
+            gameState.menu = new Menu({
+                mainMenu: null, // No main menu
+                pauseMenu: document.getElementById('pauseMenu'),
+                gameOverScreen: document.getElementById('gameOverScreen'),
+                optionsMenu: null, // No options menu
+                creditsMenu: null, // No credits menu
+                emergencyAlarm: document.getElementById('emergencyAlarm'),
+                damageIndicator: document.getElementById('damageIndicator')
+            });
+
+            gameState.score = 0;
+            gameState.health = 100;
+            gameState.level = 1;
+            gameState.time = 0;
+        }
+
+        // Main game initialization
+        async function initGame() {
+            try {
+                initUI();
+
+                gameState.game = new Game('gameCanvas');
+                gameState.game.resizeCanvas();
+
+                gameState.hud.update({
+                    playerStats: {
+                        health: 100,
+                        maxHealth: 100,
+                        score: 0
+                    },
+                    currentLevel: 1,
+                    time: 0
+                });
+
+                window.addEventListener('resize', () => {
+                    gameState.game.resizeCanvas();
+                });
+
+                setupEventListeners();
+
+                // Auto-start the game immediately
+                gameState.game.loadLevel('earth', 1);
+                gameState.currentScene = 'game';
+
+                return gameState.game;
+            } catch (error) {
+                console.error('Failed to initialize game:', error);
+                const errorElement = document.createElement('div');
+                errorElement.style.position = 'absolute';
+                errorElement.style.top = '50%';
+                errorElement.style.left = '50%';
+                errorElement.style.transform = 'translate(-50%, -50%)';
+                errorElement.style.color = 'white';
+                errorElement.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+                errorElement.style.padding = '20px';
+                errorElement.style.borderRadius = '10px';
+                errorElement.style.textAlign = 'center';
+                errorElement.style.fontFamily = 'Arial, sans-serif';
+                errorElement.textContent = 'Failed to load the game. Please try again later.';
+                document.body.appendChild(errorElement);
+                throw error;
+            }
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Pause menu buttons
+            document.getElementById('resumeButton').addEventListener('click', () => {
+                gameState.menu.hidePauseMenu();
+                gameState.isPaused = false;
+                gameState.game.resumeGame();
+            });
+
+            document.getElementById('restartButton').addEventListener('click', () => {
+                gameState.menu.hidePauseMenu();
+                gameState.game.restartLevel();
+                gameState.isPaused = false;
+            });
+
+            document.getElementById('mainMenuButton').addEventListener('click', () => {
+                gameState.menu.hidePauseMenu();
+                gameState.game.returnToMainMenu();
+                gameState.isPaused = false;
+                gameState.currentScene = 'menu';
+            });
+
+            // Game over buttons
+            document.getElementById('retryButton').addEventListener('click', () => {
+                gameState.menu.hideGameOverScreen();
+                gameState.game.restartLevel();
+            });
+
+            document.getElementById('quitButton').addEventListener('click', () => {
+                gameState.menu.hideGameOverScreen();
+                gameState.game.returnToMainMenu();
+                gameState.currentScene = 'menu';
+            });
+
+            // Keyboard controls
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Escape' && gameState.currentScene === 'game') {
+                    if (gameState.isPaused) {
+                        gameState.menu.hidePauseMenu();
+                        gameState.isPaused = false;
+                        gameState.game.resumeGame();
+                    } else {
+                        gameState.menu.showPauseMenu();
+                        gameState.isPaused = true;
+                        gameState.game.pauseGame();
+                    }
+                }
+
+                if (e.code === 'KeyM') {
+                    const audioElements = document.querySelectorAll('audio');
+                    audioElements.forEach(audio => {
+                        audio.muted = !audio.muted;
+                    });
+                }
+            });
+        }
+
+        // Start the game when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            initGame().catch(error => {
+                console.error('Game initialization failed:', error);
+            });
+        });
+    </script>
+</body>
+</html>

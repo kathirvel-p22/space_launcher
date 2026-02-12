@@ -1,0 +1,55 @@
+{
+  "id": 9,
+  "name": "Earth Level 9",
+  "scene": "earth",
+  "difficulty": 9,
+  "background": "assets/backgrounds/earth_background.png",
+  "music": "assets/music/earth_level9.mp3",
+  "gravityWells": [
+    {
+      "type": "planet",
+      "name": "Earth",
+      "position": {
+        "x": 800,
+        "y": 400
+      },
+      "mass": 5.972e24,
+      "radius": 60,
+      "gConstant": 6.67430e-11,
+      "surfaceGravity": 0.6,
+      "color": "#1da1f2",
+      "texture": "assets/textures/earth_texture.png"
+    }
+  ],
+  "entities": [
+    {
+      "type": "player",
+      "position": {
+        "x": 400,
+        "y": 550
+      },
+      "properties": {
+        "health": 100,
+        "maxHealth": 100,
+        "mass": 80,
+        "dragCoefficient": 0.3,
+        "elasticity": 0.2,
+        "sprite": "assets/sprites/player_earth.png"
+      }
+    }
+  ],
+  "objectives": [
+    {
+      "type": "survive",
+      "description": "Survive the meteor storm for 20 seconds",
+      "duration": 20
+    }
+  ],
+  "requiredUnlocks": [8],
+  "meteorConfig": {
+    "spawnInterval": 0.2,
+    "density": 3.4,
+    "speedMultiplier": 2.6,
+    "sizes": ["small", "medium", "large"]
+  }
+}

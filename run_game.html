@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Orbit Breaker - Play the game directly in your browser" />
+    <title>Orbit Breaker - Play Now</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .game-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            border: none;
+            overflow: hidden;
+        }
+
+        .game-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        @media (max-width: 768px) {
+            .game-iframe {
+                height: 100vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <iframe class="game-iframe" id="gameIframe" src="index.html" allowfullscreen></iframe>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const gameIframe = document.getElementById('gameIframe');
+
+            // Auto-start the game immediately - no user interaction needed
+            gameIframe.style.display = 'block';
+            
+            // Focus the iframe immediately for keyboard input
+            gameIframe.focus();
+            
+            // Auto-start game after iframe loads
+            gameIframe.addEventListener('load', function() {
+                console.log('Game iframe loaded, attempting to auto-start');
+                gameIframe.focus();
+                
+                // Try to start the game automatically
+                setTimeout(function() {
+                    try {
+                        // Send message to start the game
+                        gameIframe.contentWindow.postMessage(
+                            { type: 'autoStartGame' },
+                            '*'
+                        );
+                        console.log('Auto-start message sent');
+                    } catch (e) {
+                        console.log('Could not send auto-start message:', e);
+                    }
+                }, 2000);
+            });
+            
+            // Continuously try to focus the iframe in case it loses focus
+            setInterval(function() {
+                try {
+                    gameIframe.focus();
+                } catch (e) {
+                    console.log('Focus attempt failed:', e);
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+{
+  "id": 1,
+  "name": "Earth Level 1",
+  "scene": "earth",
+  "difficulty": 1,
+  "background": "assets/backgrounds/earth_background.png",
+  "music": "assets/music/earth_level1.mp3",
+  "gravityWells": [
+    {
+      "type": "planet",
+      "name": "Earth",
+      "position": {
+        "x": 800,
+        "y": 400
+      },
+      "mass": 5.972e24,
+      "radius": 60,
+      "gConstant": 6.67430e-11,
+      "surfaceGravity": 0.6,
+      "color": "#1da1f2",
+      "texture": "assets/textures/earth_texture.png"
+    }
+  ],
+  "entities": [
+    {
+      "type": "player",
+      "position": {
+        "x": 400,
+        "y": 550
+      },
+      "properties": {
+        "health": 100,
+        "maxHealth": 100,
+        "mass": 80,
+        "dragCoefficient": 0.3,
+        "elasticity": 0.2,
+        "sprite": "assets/sprites/player_earth.png"
+      }
+    }
+  ],
+  "objectives": [
+    {
+      "type": "survive",
+      "description": "Survive the meteor storm for 60 seconds",
+      "duration": 60
+    }
+  ],
+  "requiredUnlocks": [],
+  "meteorConfig": {
+    "spawnInterval": 1.0,
+    "density": 1.0,
+    "speedMultiplier": 1.0,
+    "sizes": ["small", "medium"]
+  }
+}

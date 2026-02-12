@@ -1,0 +1,221 @@
+{
+  "version": "1.0.0",
+  "buildTimestamp": "2025-12-18T16:46:28.097Z",
+  "files": [
+    "assets\\audio\\alarm.mp3",
+    "assets\\audio\\background_music.mp3",
+    "assets\\audio\\birds.mp3",
+    "assets\\audio\\earth_orbit.mp3",
+    "assets\\audio\\explosion.mp3",
+    "assets\\audio\\mars_orbit.mp3",
+    "assets\\audio\\meteor_impact.mp3",
+    "assets\\audio\\moon_orbit.mp3",
+    "assets\\audio\\rocket_engine.mp3",
+    "assets\\audio\\rocket_launch.mp3",
+    "assets\\audio\\shoot.mp3",
+    "assets\\audio\\space_ambient.mp3",
+    "assets\\audio\\thrust.mp3",
+    "assets\\audio\\wind.mp3",
+    "assets\\sprites\\earth_background.png",
+    "assets\\sprites\\earth_ground.jpg",
+    "assets\\sprites\\earth_ground.png",
+    "assets\\sprites\\earth_texture.png",
+    "assets\\sprites\\mars_background.png",
+    "assets\\sprites\\mars_texture.png",
+    "assets\\sprites\\meteor_large.png",
+    "assets\\sprites\\meteor_medium.png",
+    "assets\\sprites\\meteor_small.png",
+    "assets\\sprites\\moon_background.png",
+    "assets\\sprites\\moon_texture.png",
+    "assets\\sprites\\player_earth.jpg",
+    "assets\\sprites\\player_earth.png",
+    "assets\\sprites\\player_ship.png",
+    "assets\\sprites\\projectile.png",
+    "assets\\sprites\\rocket.png",
+    "assets\\sprites\\sky_background.png",
+    "assets\\sprites\\space_background.png",
+    "build.js",
+    "build_manifest.json",
+    "index.html",
+    "src\\animation\\SpriteAnimator.js",
+    "src\\core\\EventBus.js",
+    "src\\core\\Game.js",
+    "src\\core\\Input.js",
+    "src\\core\\Scene.js",
+    "src\\core\\SceneManager.js",
+    "src\\data\\planets.js",
+    "src\\entities\\Entity.js",
+    "src\\entities\\Meteor.js",
+    "src\\entities\\Planet.js",
+    "src\\entities\\Player.js",
+    "src\\entities\\Projectile.js",
+    "src\\entities\\Rocket.js",
+    "src\\levels\\LevelManager.js",
+    "src\\levels\\level_data\\earth_level_001.json",
+    "src\\levels\\level_data\\earth_level_002.json",
+    "src\\levels\\level_data\\earth_level_003.json",
+    "src\\levels\\level_data\\earth_level_004.json",
+    "src\\levels\\level_data\\earth_level_005.json",
+    "src\\levels\\level_data\\earth_level_006.json",
+    "src\\levels\\level_data\\earth_level_007.json",
+    "src\\levels\\level_data\\earth_level_008.json",
+    "src\\levels\\level_data\\earth_level_009.json",
+    "src\\levels\\level_data\\earth_level_010.json",
+    "src\\levels\\level_data\\level_001.json",
+    "src\\main.js",
+    "src\\physics\\PhysicsBody.js",
+    "src\\physics\\PhysicsEngine.js",
+    "src\\scenes\\EarthScene.js",
+    "src\\scenes\\MarsScene.js",
+    "src\\scenes\\MoonScene.js",
+    "src\\scenes\\SkyScene.js",
+    "src\\scenes\\SpaceScene.js",
+    "src\\state\\GameState.js",
+    "src\\state\\SaveSystem.js",
+    "src\\ui\\HUD.js",
+    "src\\ui\\Menu.js",
+    "styles.css"
+  ],
+  "assets": {
+    "version": "1.0.0",
+    "assets": {
+      "images": {
+        "earth": {
+          "path": "assets/images/earth.png",
+          "width": 512,
+          "height": 512,
+          "type": "planet"
+        },
+        "moon": {
+          "path": "assets/images/moon.png",
+          "width": 256,
+          "height": 256,
+          "type": "planet"
+        },
+        "stars": {
+          "path": "assets/images/stars.png",
+          "width": 1920,
+          "height": 1080,
+          "type": "background"
+        },
+        "galaxy": {
+          "path": "assets/images/galaxy.png",
+          "width": 1920,
+          "height": 1080,
+          "type": "background"
+        }
+      },
+      "sprites": {
+        "player": {
+          "path": "assets/sprites/player_sprite.png",
+          "width": 64,
+          "height": 64,
+          "frameWidth": 32,
+          "frameHeight": 32,
+          "frames": 4,
+          "type": "entity"
+        },
+        "meteor_small": {
+          "path": "assets/sprites/meteor_small.png",
+          "width": 64,
+          "height": 64,
+          "frameWidth": 32,
+          "frameHeight": 32,
+          "frames": 8,
+          "type": "entity"
+        },
+        "meteor_medium": {
+          "path": "assets/sprites/meteor_medium.png",
+          "width": 128,
+          "height": 128,
+          "frameWidth": 64,
+          "frameHeight": 64,
+          "frames": 6,
+          "type": "entity"
+        },
+        "meteor_large": {
+          "path": "assets/sprites/meteor_large.png",
+          "width": 256,
+          "height": 256,
+          "frameWidth": 128,
+          "frameHeight": 128,
+          "frames": 4,
+          "type": "entity"
+        },
+        "rocket": {
+          "path": "assets/sprites/rocket.png",
+          "width": 128,
+          "height": 128,
+          "frameWidth": 64,
+          "frameHeight": 64,
+          "frames": 4,
+          "type": "entity"
+        },
+        "explosion": {
+          "path": "assets/sprites/explosion.png",
+          "width": 256,
+          "height": 256,
+          "frameWidth": 64,
+          "frameHeight": 64,
+          "frames": 8,
+          "type": "effect"
+        }
+      },
+      "audio": {
+        "background_music": {
+          "path": "assets/audio/background_music.mp3",
+          "loop": true,
+          "volume": 0.5,
+          "type": "music"
+        },
+        "meteor_impact": {
+          "path": "assets/audio/meteor_impact.mp3",
+          "loop": false,
+          "volume": 0.7,
+          "type": "sfx"
+        },
+        "rocket_launch": {
+          "path": "assets/audio/rocket_launch.mp3",
+          "loop": false,
+          "volume": 0.8,
+          "type": "sfx"
+        },
+        "explosion": {
+          "path": "assets/audio/explosion.mp3",
+          "loop": false,
+          "volume": 0.9,
+          "type": "sfx"
+        },
+        "alarm": {
+          "path": "assets/audio/alarm.mp3",
+          "loop": true,
+          "volume": 0.6,
+          "type": "sfx"
+        },
+        "level_complete": {
+          "path": "assets/audio/level_complete.mp3",
+          "loop": false,
+          "volume": 0.8,
+          "type": "sfx"
+        },
+        "game_over": {
+          "path": "assets/audio/game_over.mp3",
+          "loop": false,
+          "volume": 0.8,
+          "type": "sfx"
+        }
+      },
+      "fonts": {
+        "main": {
+          "path": "assets/fonts/pixel_font.ttf",
+          "type": "font"
+        }
+      }
+    },
+    "metadata": {
+      "totalAssets": 18,
+      "lastUpdated": "2025-12-18T08:29:40Z",
+      "gameVersion": "1.0.0"
+    }
+  }
+}
