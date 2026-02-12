@@ -18,25 +18,25 @@ export class LevelObjective {
         this.objectiveElement.id = 'levelObjective';
         this.objectiveElement.style.cssText = `
             position: fixed;
-            top: 120px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(10, 10, 30, 0.98);
-            backdrop-filter: blur(10px);
-            border: 3px solid #E8A33C;
-            border-radius: 12px;
-            padding: 20px 40px;
-            z-index: 9999;
+            top: 15px;
+            right: 15px;
+            background: rgba(10, 10, 30, 0.92);
+            backdrop-filter: blur(8px);
+            border: 2px solid #E8A33C;
+            border-radius: 8px;
+            padding: 12px 20px;
+            z-index: 100;
             display: none;
-            text-align: center;
-            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.9), 0 0 30px rgba(232, 163, 60, 0.8);
-            min-width: 350px;
+            text-align: left;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.7), 0 0 15px rgba(232, 163, 60, 0.4);
+            min-width: 220px;
+            max-width: 280px;
             pointer-events: none;
         `;
         this.objectiveElement.innerHTML = `
-            <div style="font-size: 14px; color: rgba(255, 255, 255, 0.7); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;">🎯 OBJECTIVE</div>
-            <div id="objectiveText" style="font-size: 22px; color: #E8A33C; font-weight: bold; text-shadow: 0 0 10px rgba(232, 163, 60, 0.5);"></div>
-            <div id="objectiveProgress" style="font-size: 16px; color: #00FFFF; margin-top: 10px; font-weight: 500;"></div>
+            <div style="font-size: 10px; color: rgba(255, 255, 255, 0.6); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">🎯 OBJECTIVE</div>
+            <div id="objectiveText" style="font-size: 14px; color: #E8A33C; font-weight: bold; text-shadow: 0 0 8px rgba(232, 163, 60, 0.4); line-height: 1.3;"></div>
+            <div id="objectiveProgress" style="font-size: 13px; color: #00FFFF; margin-top: 6px; font-weight: 500;"></div>
         `;
         document.body.appendChild(this.objectiveElement);
         
