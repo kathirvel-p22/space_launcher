@@ -55,8 +55,9 @@ export class Game {
     /**
      * Create a new Game instance
      * @param {string} canvasId - ID of the canvas element
+     * @param {HUD} [customHud] - Optional custom HUD instance
      */
-    constructor(canvasId) {
+    constructor(canvasId, customHud = null) {
         this.canvas = document.getElementById(canvasId);
         if (!this.canvas) {
             throw new Error(`Canvas element with ID ${canvasId} not found`);
@@ -70,7 +71,7 @@ export class Game {
         // Initialize systems
         this.physicsEngine = new PhysicsEngine();
         this.input = new Input();
-        this.hud = new HUD();
+        this.hud = customHud || new HUD(); // Use custom HUD if provided
         this.sceneManager = new SceneManager(this.physicsEngine, this.hud);
         this.saveSystem = new SaveSystem();
         
@@ -130,6 +131,7 @@ export class Game {
     pauseGame() {
         if (!this.isRunning || this.isPaused) return;
         this.isPaused = true;
+        console.log('[Game] Game paused');
     }
 
     /**
@@ -138,12 +140,29 @@ export class Game {
     resumeGame() {
         if (!this.isRunning || !this.isPaused) return;
         this.isPaused = false;
+        this.lastTime = performance.now(); // Reset time to avoid large delta
+        console.log('[Game] Game resumed');
+    }
+    
+    /**
+     * Stop the game completely
+     */
+    stopGame() {
+        console.log('[Game] Stopping game');
+        this.isRunning = false;
+        this.isPaused = false;
+        
+        // Clean up current scene
+        if (this.sceneManager && this.sceneManager.currentScene) {
+            this.sceneManager.currentScene.cleanup();
+        }
     }
 
     /**
      * Restart the current level
      */
     async restartLevel() {
+        console.log('[Game] Restarting level');
         await this.sceneManager.loadScene(
             this.gameState.currentScene,
             this.gameState.currentLevel
@@ -155,7 +174,8 @@ export class Game {
      * Return to the main menu
      */
     returnToMainMenu() {
-        this.isRunning = false;
+        console.log('[Game] Returning to main menu');
+        this.stopGame();
     }
 
     /**

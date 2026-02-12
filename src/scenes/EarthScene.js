@@ -209,6 +209,16 @@ export class EarthScene extends Scene {
         this.levelComplete = false;
         this.levelCompleteTimer = 0;
         
+        // Show level objective
+        if (window.gameState && window.gameState.hud) {
+            const objective = {
+                type: 'score',
+                target: this.targetScore,
+                description: levelNum === 10 ? 'Reach rocket and launch to Sky!' : `Reach ${this.targetScore} points`
+            };
+            window.gameState.hud.showLevelObjective(objective);
+        }
+        
         // Create player AFTER ground height is set
         this.player = new Player({
             health: 100,
@@ -863,6 +873,11 @@ export class EarthScene extends Scene {
         const levelNum = this.levelConfig.id;
         const currentScore = this.player ? this.player.score : 0;
         
+        // Update objective progress
+        if (window.gameState && window.gameState.hud) {
+            window.gameState.hud.updateObjectiveProgress(currentScore, this.targetScore);
+        }
+        
         // Level 10 requires rocket launch after reaching target score
         if (levelNum === 10) {
             if (currentScore >= this.targetScore && !this.rocketDiscovered) {
@@ -871,6 +886,7 @@ export class EarthScene extends Scene {
             }
             if (this.rocketLaunched) {
                 this.levelComplete = true;
+                this.showCompletionAnimation();
                 EventBus.emit('level_complete');
             }
             return;
@@ -881,10 +897,31 @@ export class EarthScene extends Scene {
             this.levelComplete = true;
             this.levelCompleteTimer = 2.0; // 2 second delay before transition
             
-            // Show level complete message and transition
+            // Show completion animation
+            this.showCompletionAnimation();
+            
+            // Emit level complete after animation
             setTimeout(() => {
                 EventBus.emit('level_complete');
-            }, 2000);
+            }, 3000); // Wait for animation to finish
+        }
+    }
+    
+    /**
+     * Show level completion animation
+     */
+    showCompletionAnimation() {
+        if (window.gameState && window.gameState.hud) {
+            const stats = {
+                score: this.player ? this.player.score : 0,
+                time: (performance.now() - this.levelStartTime) / 1000,
+                health: this.player ? this.player.health : 100,
+                accuracy: 85 // Calculate based on hits/shots if available
+            };
+            
+            window.gameState.hud.showLevelComplete(stats, () => {
+                console.log('[EarthScene] Level completion animation finished');
+            });
         }
     }
 

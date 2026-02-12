@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Enhanced UI - Orbit Breaker</title>
+    <link rel="stylesheet" href="styles_enhanced.css">
+</head>
+<body>
+    <div id="gameContainer">
+        <!-- Game Canvas -->
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- HUD (Heads-Up Display) -->
+        <div id="hud" style="display: none;">
+            <!-- Top Left: Health & Fuel -->
+            <div class="hud-top-left">
+                <div id="healthBar" class="hud-panel">
+                    <div class="hud-label">Health</div>
+                    <div class="health-bar-container">
+                        <div class="health-bar-fill" style="width: 100%;"></div>
+                        <div class="health-bar-text">100 / 100</div>
+                    </div>
+                </div>
+                <div id="fuelBar" class="hud-panel" style="display: none;">
+                    <div class="hud-label">Fuel</div>
+                    <div class="fuel-bar-container">
+                        <div class="fuel-bar-fill" style="width: 100%;"></div>
+                        <div class="fuel-bar-text">100%</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Top Center: Score -->
+            <div class="hud-top-center">
+                <div class="hud-panel">
+                    <div class="hud-label">Score</div>
+                    <div id="scoreValue" class="hud-value">0</div>
+                </div>
+            </div>
+            
+            <!-- Top Right: Level & Time -->
+            <div class="hud-top-right">
+                <div class="hud-panel">
+                    <div class="hud-label">Level</div>
+                    <div id="levelValue" class="hud-value">1</div>
+                </div>
+                <div class="hud-panel">
+                    <div class="hud-label">Time</div>
+                    <div id="timeValue" class="hud-value">0:00</div>
+                </div>
+            </div>
+            
+            <!-- Bottom: Controls Hint -->
+            <div class="hud-bottom">
+                <div class="controls-hint">
+                    <kbd>←</kbd><kbd>→</kbd> or <kbd>A</kbd><kbd>D</kbd> Move | 
+                    <kbd>↑</kbd> or <kbd>W</kbd> Jump/Thrust | 
+                    <kbd>X</kbd> or <kbd>Enter</kbd> Shoot | 
+                    <kbd>ESC</kbd> Pause
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Menu -->
+        <div id="mainMenu" class="menu-overlay">
+            <div class="menu-content">
+                <h1 class="menu-title">Orbit Breaker</h1>
+                <p class="menu-subtitle">Journey from Earth to Mars</p>
+                <div class="menu-buttons">
+                    <button id="startButton" class="menu-button">Start Game</button>
+                    <button id="continueButton" class="menu-button" style="display: none;">Continue</button>
+                    <button id="levelSelectButton" class="menu-button-secondary menu-button">Level Select</button>
+                </div>
+                <div id="startStatus" class="status-message status-info" style="display: none;"></div>
+                <div id="startError" class="status-message status-error" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <!-- Level Select Menu -->
+        <div id="levelSelectMenu" class="menu-overlay" style="display: none;">
+            <div class="menu-content">
+                <h2 class="menu-title" style="font-size: 36px;">Select Level</h2>
+                <div class="menu-buttons" id="levelSelectButtons" style="max-height: 400px; overflow-y: auto;">
+                    <!-- Dynamically generated level buttons -->
+                </div>
+                <div class="menu-buttons" style="margin-top: 20px;">
+                    <button id="backToMainButton" class="menu-button-secondary menu-button">Back to Main Menu</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pause Menu -->
+        <div id="pauseMenu" class="menu-overlay" style="display: none;">
+            <div class="menu-content">
+                <h2 class="menu-title">Paused</h2>
+                <div class="menu-buttons">
+                    <button id="resumeButton" class="menu-button">Resume</button>
+                    <button id="restartButton" class="menu-button-secondary menu-button">Restart Level</button>
+                    <button id="mainMenuButton" class="menu-button-danger menu-button">Main Menu</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="menu-overlay" style="display: none;">
+            <div class="menu-content">
+                <h2 class="menu-title">Game Over</h2>
+                <div class="game-over-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Final Score:</span>
+                        <span class="stat-value" id="finalScore">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Level Reached:</span>
+                        <span class="stat-value" id="finalLevel">1</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Time Played:</span>
+                        <span class="stat-value" id="finalTime">0:00</span>
+                    </div>
+                </div>
+                <div class="menu-buttons">
+                    <button id="retryButton" class="menu-button">Retry Level</button>
+                    <button id="quitButton" class="menu-button-danger menu-button">Main Menu</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Victory Screen -->
+        <div id="victoryScreen" class="menu-overlay" style="display: none;">
+            <div class="menu-content">
+                <h2 class="menu-title" style="color: var(--success-color);">Victory!</h2>
+                <p class="menu-subtitle">Level Complete</p>
+                <div class="game-over-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Score:</span>
+                        <span class="stat-value" id="victoryScore">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Time:</span>
+                        <span class="stat-value" id="victoryTime">0:00</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Accuracy:</span>
+                        <span class="stat-value" id="victoryAccuracy">100%</span>
+                    </div>
+                </div>
+                <div class="menu-buttons">
+                    <button id="nextLevelButton" class="menu-button">Next Level</button>
+                    <button id="victoryMenuButton" class="menu-button-secondary menu-button">Main Menu</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chapter Transition -->
+        <div id="chapterTransition" class="chapter-transition" style="display: none;">
+            <div class="chapter-number">CHAPTER <span id="chapterNum">1</span></div>
+            <div class="chapter-title" id="chapterTitle">EARTH</div>
+            <div class="chapter-subtitle" id="chapterSubtitle">The Beginning</div>
+        </div>
+        
+        <!-- Emergency Alarm (hidden by default) -->
+        <div id="emergencyAlarm" style="display: none;"></div>
+        <div id="damageIndicator" style="display: none;"></div>
+    </div>
+    
+    <!-- Game Script -->
+    <script type="module" src="src/main_enhanced.js"></script>
+</body>
+</html>

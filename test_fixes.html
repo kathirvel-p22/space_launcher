@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixes - Level 11 Controls & Objectives</title>
+    <link rel="stylesheet" href="styles_enhanced.css">
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- HUD -->
+        <div id="hud" style="display: none;">
+            <div class="hud-item">
+                <div class="hud-label">HEALTH</div>
+                <div id="healthBar" class="bar-container">
+                    <div class="health-bar-fill"></div>
+                    <div class="health-bar-text">100 / 100</div>
+                </div>
+            </div>
+            
+            <div class="hud-item">
+                <div class="hud-label">FUEL</div>
+                <div id="fuelBar" class="bar-container">
+                    <div class="fuel-bar-fill"></div>
+                    <div class="fuel-bar-text">100%</div>
+                </div>
+            </div>
+            
+            <div class="hud-item">
+                <div class="hud-label">SCORE</div>
+                <div id="scoreValue" class="hud-value">0</div>
+            </div>
+            
+            <div class="hud-item">
+                <div class="hud-label">LEVEL</div>
+                <div id="levelValue" class="hud-value">11</div>
+            </div>
+            
+            <div class="hud-item">
+                <div class="hud-label">TIME</div>
+                <div id="timeValue" class="hud-value">0:00</div>
+            </div>
+        </div>
+        
+        <!-- Main Menu -->
+        <div id="mainMenu">
+            <div class="menu-container">
+                <h1 class="game-title">🚀 ORBIT BREAKER</h1>
+                <div class="menu-buttons">
+                    <button id="startButton" class="menu-button primary">Start Level 11</button>
+                </div>
+                <div id="startStatus" class="status-message"></div>
+            </div>
+        </div>
+        
+        <!-- Pause Menu -->
+        <div id="pauseMenu" style="display: none;">
+            <div class="menu-container">
+                <h2>PAUSED</h2>
+                <div class="menu-buttons">
+                    <button id="resumeButton" class="menu-button">Resume</button>
+                    <button id="restartButton" class="menu-button">Restart</button>
+                    <button id="mainMenuButton" class="menu-button">Main Menu</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" style="display: none;">
+            <div class="menu-container">
+                <h2>GAME OVER</h2>
+                <div class="menu-buttons">
+                    <button id="retryButton" class="menu-button">Retry</button>
+                    <button id="quitButton" class="menu-button">Quit</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Victory Screen -->
+        <div id="victoryScreen" style="display: none;">
+            <div class="menu-container">
+                <h2>VICTORY!</h2>
+                <div class="menu-buttons">
+                    <button id="nextLevelButton" class="menu-button primary">Next Level</button>
+                    <button id="victoryMainMenuButton" class="menu-button">Main Menu</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Damage Indicator -->
+        <div id="damageIndicator" style="display: none;"></div>
+    </div>
+    
+    <script type="module">
+        import { Game } from './src/core/Game.js';
+        import { HUDEnhanced } from './src/ui/HUD_Enhanced.js';
+        import { MenuEnhanced } from './src/ui/Menu_Enhanced.js';
+        
+        async function init() {
+            console.log('=== TESTING LEVEL 11 FIXES ===');
+            console.log('1. Rocket controls (left/right/up/down)');
+            console.log('2. Level objective visibility');
+            console.log('3. Score updates');
+            
+            // Initialize HUD
+            const hud = new HUDEnhanced();
+            
+            // Initialize Menu
+            const menu = new MenuEnhanced();
+            
+            // Create game with HUD
+            const game = new Game('gameCanvas', hud);
+            game.resizeCanvas();
+            
+            // Setup start button
+            const startButton = document.getElementById('startButton');
+            startButton.addEventListener('click', async () => {
+                console.log('Starting Level 11...');
+                startButton.disabled = true;
+                startButton.textContent = 'Loading...';
+                
+                try {
+                    // Hide main menu
+                    document.getElementById('mainMenu').style.display = 'none';
+                    
+                    // Show HUD
+                    hud.show();
+                    
+                    // Load Level 11 (Sky scene)
+                    await game.loadLevel('sky', 11);
+                    
+                    // Start game
+                    game.startGame();
+                    
+                    console.log('=== LEVEL 11 STARTED ===');
+                    console.log('Controls:');
+                    console.log('  Arrow Keys or WASD: Move rocket');
+                    console.log('  W/↑/Space: Thrust up');
+                    console.log('  S/↓: Move down');
+                    console.log('  X/Enter: Shoot');
+                    console.log('  ESC: Pause');
+                    console.log('');
+                    console.log('Watch for:');
+                    console.log('  1. Level objective at top of screen');
+                    console.log('  2. Score updating when you destroy debris');
+                    console.log('  3. Rocket responding to keyboard input');
+                    
+                } catch (err) {
+                    console.error('Failed to start:', err);
+                    startButton.disabled = false;
+                    startButton.textContent = 'Start Level 11';
+                    document.getElementById('startStatus').textContent = 'Error: ' + err.message;
+                    document.getElementById('startStatus').style.color = 'red';
+                }
+            });
+            
+            // Expose for debugging
+            window.game = game;
+            window.hud = hud;
+            window.menu = menu;
+            
+            console.log('=== TEST READY ===');
+            console.log('Click "Start Level 11" to begin');
+        }
+        
+        init().catch(err => {
+            console.error('Failed to initialize:', err);
+        });
+    </script>
+</body>
+</html>

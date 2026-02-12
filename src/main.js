@@ -265,6 +265,56 @@ function setupEventListeners() {
         }
     });
     
+    // Pause menu buttons
+    const resumeButton = document.getElementById('resumeButton');
+    if (resumeButton) {
+        resumeButton.addEventListener('click', () => {
+            gameState.menu.hidePauseMenu();
+            gameState.isPaused = false;
+            gameState.game.resumeGame();
+        });
+    }
+    
+    const restartButton = document.getElementById('restartButton');
+    if (restartButton) {
+        restartButton.addEventListener('click', async () => {
+            gameState.menu.hidePauseMenu();
+            gameState.isPaused = false;
+            await gameState.game.restartLevel();
+        });
+    }
+    
+    const mainMenuButton = document.getElementById('mainMenuButton');
+    if (mainMenuButton) {
+        mainMenuButton.addEventListener('click', () => {
+            gameState.menu.hidePauseMenu();
+            gameState.game.returnToMainMenu();
+            gameState.currentScene = 'menu';
+            gameState.menu.showMainMenu();
+        });
+    }
+    
+    // Game over buttons
+    const retryButton = document.getElementById('retryButton');
+    if (retryButton) {
+        retryButton.addEventListener('click', async () => {
+            const gameOverScreen = document.getElementById('gameOverScreen');
+            if (gameOverScreen) gameOverScreen.style.display = 'none';
+            await gameState.game.restartLevel();
+        });
+    }
+    
+    const quitButton = document.getElementById('quitButton');
+    if (quitButton) {
+        quitButton.addEventListener('click', () => {
+            const gameOverScreen = document.getElementById('gameOverScreen');
+            if (gameOverScreen) gameOverScreen.style.display = 'none';
+            gameState.game.returnToMainMenu();
+            gameState.currentScene = 'menu';
+            gameState.menu.showMainMenu();
+        });
+    }
+    
     // Touch controls (optional)
     const touchControls = document.createElement('div');
     touchControls.className = 'touch-controls';

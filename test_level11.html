@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Level 11 - Orbit Breaker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- HUD -->
+        <div id="hud">
+            <div id="healthBar"></div>
+            <div id="scoreValue">0</div>
+            <div id="levelValue">11</div>
+            <div id="timeValue">0:00</div>
+        </div>
+        
+        <!-- Main Menu -->
+        <div id="mainMenu" style="display: none;">
+            <h1>Orbit Breaker</h1>
+            <button id="startButton">Start Level 11</button>
+            <p id="startStatus"></p>
+            <p id="startError" style="color: red; display: none;"></p>
+        </div>
+        
+        <!-- Pause Menu -->
+        <div id="pauseMenu" style="display: none;">
+            <h2>Paused</h2>
+            <button id="resumeButton">Resume</button>
+            <button id="restartButton">Restart</button>
+            <button id="mainMenuButton">Main Menu</button>
+        </div>
+        
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" style="display: none;">
+            <h2>Game Over</h2>
+            <button id="retryButton">Retry</button>
+            <button id="quitButton">Quit</button>
+        </div>
+        
+        <!-- Emergency Alarm (hidden) -->
+        <div id="emergencyAlarm" style="display: none;"></div>
+        <div id="damageIndicator" style="display: none;"></div>
+    </div>
+    
+    <script type="module">
+        import { Game } from './src/core/Game.js';
+        import { HUD } from './src/ui/HUD.js';
+        import { Menu } from './src/ui/Menu.js';
+        
+        async function init() {
+            console.log('=== INITIALIZING LEVEL 11 TEST ===');
+            
+            // Initialize HUD
+            const hud = new HUD({
+                healthBar: document.getElementById('healthBar'),
+                scoreValue: document.getElementById('scoreValue'),
+                levelValue: document.getElementById('levelValue'),
+                timeValue: document.getElementById('timeValue')
+            });
+            
+            // Initialize Menu
+            const menu = new Menu({
+                mainMenu: document.getElementById('mainMenu'),
+                pauseMenu: document.getElementById('pauseMenu'),
+                gameOverScreen: document.getElementById('gameOverScreen'),
+                emergencyAlarm: document.getElementById('emergencyAlarm'),
+                damageIndicator: document.getElementById('damageIndicator')
+            });
+            
+            // Create game
+            const game = new Game('gameCanvas');
+            game.hud = hud;
+            game.resizeCanvas();
+            
+            // Load Level 11 (Sky scene)
+            console.log('Loading Level 11...');
+            await game.loadLevel('sky', 11);
+            
+            console.log('Starting game...');
+            game.startGame();
+            
+            // Expose for debugging
+            window.game = game;
+            window.hud = hud;
+            window.menu = menu;
+            
+            console.log('=== LEVEL 11 TEST READY ===');
+            console.log('Press arrow keys or WASD to move');
+            console.log('Press X or Enter to shoot');
+        }
+        
+        init().catch(err => {
+            console.error('Failed to initialize:', err);
+        });
+    </script>
+</body>
+</html>
