@@ -589,6 +589,7 @@ body {
 
 /* ===== CONTROLS HINT ===== */
 .controls-hint {
+    display: none; /* Hidden - was blocking gameplay */
     position: fixed;
     bottom: 8px;
     left: 50%;
